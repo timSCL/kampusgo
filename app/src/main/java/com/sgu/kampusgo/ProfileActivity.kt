@@ -29,12 +29,14 @@ class ProfileActivity : ComponentActivity() {
 
         // Read the extra named "name". If screen 1 sent nothing, use Guest. No !!.
         val name = intent.getStringExtra("name") ?: "Guest"
+        val npm = intent.getStringExtra("npm") ?: "-"
 
         setContent {
             KampusGoTheme {
                 Column(modifier = Modifier.padding(24.dp)) {
                     // Show the name that traveled inside the Intent.
                     Text(text = "Hello, $name")
+                    Text(text = "NPM: $npm")
                     Button(onClick = {
                         // Implicit Intent: do not name an Activity. Ask the phone for a dialer.
                         val dial = Intent(Intent.ACTION_DIAL, Uri.parse("tel:0211234567"))
@@ -46,6 +48,32 @@ class ProfileActivity : ComponentActivity() {
                         }
                     }) {
                         Text("Call campus")
+                    }
+                    Button(onClick = {
+                        // Implicit Intent: do not name an Activity. Ask the phone for a dialer.
+                        val dial = Intent(Intent.ACTION_VIEW, Uri.parse("https://sgu.ac.id"))
+                        try {
+                            activity.startActivity(dial)
+                        } catch (e: ActivityNotFoundException) {
+                            Log.d("KampusGo", e.message ?: "")
+                            Toast.makeText(activity, "No browser on this device", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    }) {
+                        Text("Open Browser")
+                    }
+                    Button(onClick = {
+                        // Implicit Intent: do not name an Activity. Ask the phone for a dialer.
+                        val dial = Intent(Intent.ACTION_VIEW, Uri.parse("geo:-6.225497,106.6523239?q=Swiss German University"))
+                        try {
+                            activity.startActivity(dial)
+                        } catch (e: ActivityNotFoundException) {
+                            Log.d("KampusGo", e.message ?: "")
+                            Toast.makeText(activity, "No map application on this device", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    }) {
+                        Text("Open Map")
                     }
                 }
             }
