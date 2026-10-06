@@ -40,17 +40,20 @@ class MainActivity : ComponentActivity() {
                             .padding(24.dp)
                     ) {
                         Text(text = "KampusGo")
+
                         // Screen 1 input. "name" here is the text, not the Intent extra yet.
                         OutlinedTextField(
                             value = name,
                             onValueChange = { name = it },
                             label = { Text("Your name") }
                         )
+
                         OutlinedTextField(
                             value = npm,
                             onValueChange = { npm = it },
                             label = { Text("Your NPM") }
                         )
+
                         Button(onClick = {
                             // Explicit Intent: open ProfileActivity, which is our own screen.
                             val intent = Intent(activity, ProfileActivity::class.java)
@@ -61,6 +64,14 @@ class MainActivity : ComponentActivity() {
                             activity.startActivity(intent)
                         }) {
                             Text("Open profile")
+                        }
+
+                        Button(onClick = {
+                            // Explicit Intent. This opens the XML activity, not ProfileActivity.
+                            val intent = Intent(activity, ProfileXmlActivity::class.java)
+                            activity.startActivity(intent)
+                        }) {
+                            Text("XML form")
                         }
                     }
                 }
