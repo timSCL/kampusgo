@@ -40,26 +40,22 @@ class MainActivity : ComponentActivity() {
                 var major by remember { mutableStateOf(listOf(R.array.majors.toString()).first()) }
                 var angkatan by remember { mutableStateOf("") }
 
+                var showEmpty by remember { mutableStateOf(false) }
+                val events = if (showEmpty) emptyList() else sampleEvents
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Column(
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .verticalScroll(rememberScrollState())
-                    ) {
-                        ProfileForm(
-                            name = name,
-                            onNameChange = { name = it },
-                            npm = npm,
-                            onNpmChange = { npm = it},
-                            email = email,
-                            onEmailChange = { email = it },
-                            major = major,
-                            onMajorChange = { major = it },
-                            angkatan = angkatan,
-                            onAngkatanChange = { angkatan = it },
-                            modifier = Modifier
-                                .padding(24.dp)
+                    Column(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
+                        EventList(
+                            events = events,
+                            onEventClick = { id ->
+                                val intent = Intent(activity, EventDetailActivity::class.java)
+                                intent.putExtra("id", id)
+                                activity.startActivity(intent)
+                            },
+                            modifier = Modifier.weight(1f),
                         )
+                        Button(onClick = { showEmpty = !showEmpty }) {
+                            Text(if (showEmpty) "Show events" else "Show empty")
+                        }
                         Button(onClick = {
                             activity.startActivity(Intent(activity, ProfileXmlActivity::class.java))
                         }) {
