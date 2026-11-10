@@ -29,40 +29,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        // Capture the Activity BEFORE setContent. The button needs it to build an Intent.
-        val activity = this
 
         setContent {
             KampusGoTheme {
-                var name by remember { mutableStateOf("") }
-                var npm by remember { mutableStateOf("") }
-                var email by remember { mutableStateOf("") }
-                var major by remember { mutableStateOf(listOf(R.array.majors.toString()).first()) }
-                var angkatan by remember { mutableStateOf("") }
-
-                var showEmpty by remember { mutableStateOf(false) }
-                val events = if (showEmpty) emptyList() else sampleEvents
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Column(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
-                        EventList(
-                            events = events,
-                            onEventClick = { id ->
-                                val intent = Intent(activity, EventDetailActivity::class.java)
-                                intent.putExtra("id", id)
-                                activity.startActivity(intent)
-                            },
-                            modifier = Modifier.weight(1f),
-                        )
-                        Button(onClick = { showEmpty = !showEmpty }) {
-                            Text(if (showEmpty) "Show events" else "Show empty")
-                        }
-                        Button(onClick = {
-                            activity.startActivity(Intent(activity, ProfileXmlActivity::class.java))
-                        }) {
-                            Text("XML form")
-                        }
-                    }
-                }
+                KampusApp()
             }
         }
     }

@@ -51,18 +51,13 @@ fun LabeledField(
 
 @Composable
 fun ProfileForm(
-    name: String,
-    onNameChange: (String) -> Unit,
-    npm: String,
-    onNpmChange: (String) -> Unit,
-    email: String,
-    onEmailChange: (String) -> Unit,
-    major: String,
-    onMajorChange: (String) -> Unit,
-    angkatan: String,
-    onAngkatanChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var name by remember { mutableStateOf("") }
+    var npm by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var major by remember { mutableStateOf(listOf(R.array.majors.toString()).first()) }
+    var angkatan by remember { mutableStateOf("") }
 
     val emailError = email.isNotEmpty() && !email.contains("@")
     val valid = name.isNotBlank() && email.contains("@")
@@ -72,17 +67,17 @@ fun ProfileForm(
         Text("KampusGo")
         LabeledField(
             value = name,
-            onValueChange = onNameChange,
+            onValueChange = { name = it },
             label = "Name"
         )
         LabeledField(
             value = npm,
-            onValueChange = onNpmChange,
+            onValueChange = { npm = it},
             label = "NPM"
         )
         LabeledField(
             value = email,
-            onValueChange = onEmailChange,
+            onValueChange = { email = it },
             label = "Email",
             isError = emailError,
             supportingText = if (emailError) "Email needs @" else null,
@@ -90,13 +85,13 @@ fun ProfileForm(
         Text("Major", modifier = Modifier.padding(top = 12.dp))
         majors.forEach { option ->
             Row(verticalAlignment = Alignment.CenterVertically) {
-                RadioButton(selected = major == option, onClick = { onMajorChange(option) })
+                RadioButton(selected = major == option, onClick = { major = option })
                 Text(option)
             }
         }
         LabeledField(
             value = angkatan,
-            onValueChange = onAngkatanChange,
+            onValueChange = { angkatan = it },
             label = "Angkatan"
         )
         Button(
@@ -114,26 +109,8 @@ fun ProfileForm(
 @Preview(showBackground = true)
 @Composable
 fun ProfileFormPreview() {
-    var name by remember { mutableStateOf("") }
-    var npm by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var major by remember { mutableStateOf(listOf(R.array.majors.toString()).first()) }
-    var angkatan by remember { mutableStateOf("") }
 
     KampusGoTheme {
-        ProfileForm(
-            name = name,
-            onNameChange = { name = it },
-            npm = npm,
-            onNpmChange = { npm = it},
-            email = email,
-            onEmailChange = { email = it },
-            major = major,
-            onMajorChange = { major = it },
-            angkatan = angkatan,
-            onAngkatanChange = { angkatan = it },
-            modifier = Modifier
-                .padding(24.dp)
-        )
+        ProfileForm(modifier = Modifier.padding(24.dp))
     }
 }
