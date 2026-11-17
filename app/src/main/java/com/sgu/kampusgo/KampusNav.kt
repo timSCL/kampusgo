@@ -91,6 +91,9 @@ fun KampusApp(modifier: Modifier = Modifier) {
                     }
                 }
             }
+            composable("events") {
+                EventsScreen(onEventClick = { id -> navController.navigate("event/$id") })
+            }
 
             composable(
                 route = "event/{id}",
