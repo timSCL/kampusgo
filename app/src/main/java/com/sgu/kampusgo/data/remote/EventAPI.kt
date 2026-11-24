@@ -1,7 +1,9 @@
 // guided by Android Basics codelab: Get data from the internet.
-package com.sgu.kampusgo
+package com.sgu.kampusgo.data.remote
 
 import android.util.Log
+import com.sgu.kampusgo.Event
+import com.sgu.kampusgo.data.EventsUiState
 import java.io.IOException
 import kotlinx.coroutines.CancellationException
 import retrofit2.Response
@@ -15,12 +17,6 @@ data class EventResponse(
 interface EventApi {
     @GET("events.json")
     suspend fun events(): Response<EventResponse>
-}
-
-sealed interface EventsUiState {
-    data object Loading : EventsUiState
-    data class Success(val events: List<Event>) : EventsUiState
-    data class Error(val message: String) : EventsUiState
 }
 
 object EventApiClient {

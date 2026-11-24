@@ -1,6 +1,5 @@
 package com.sgu.kampusgo
 
-import android.content.Intent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,54 +16,43 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
-
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.sgu.kampusgo.ui.NoteViewModel
 @Composable
-fun NotesScreen(modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-    val dao = remember(context) { NoteDatabase.get(context).noteDao() }
-    val notes by dao.observeAll().collectAsState(initial = emptyList())
+fun NotesScreen(
+    modifier: Modifier = Modifier,
+    viewModel: NoteViewModel = viewModel(),
+) {
+    val notes by viewModel.notes.collectAsState()
     var title by remember { mutableStateOf("") }
     var body by remember { mutableStateOf("") }
-    val scope = rememberCoroutineScope()
-
-    Column(modifier = Modifier.fillMaxSize().padding(15.dp)) {
+    Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
         OutlinedTextField(
             value = title,
             onValueChange = { title = it },
             label = { Text("Title") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
-
         OutlinedTextField(
             value = body,
             onValueChange = { body = it },
             label = { Text("Body") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
-
         Button(
             onClick = {
-                val note = Note(title = title.trim(), body = body.trim())
-                scope.launch { dao.insert(note) }
+                viewModel.add(title, body)
                 title = ""
                 body = ""
             },
-            enabled = title.isNotBlank()
+            enabled = title.isNotBlank(),
         ) { Text("Save") }
-
         if (notes.isEmpty()) {
-            Text(
-                text = "No Notes Yet",
-                modifier = Modifier.padding(top = 12.dp)
-            )
+            Text("No notes yet", modifier = Modifier.padding(top = 12.dp))
         } else {
             LazyColumn(Modifier.weight(1f)) {
                 items(notes, key = { it.id }) { note ->
@@ -72,12 +60,11 @@ fun NotesScreen(modifier: Modifier = Modifier) {
                         modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(text = note.title)
-                            Text(text = note.body)
+                        Column(Modifier.weight(1f)) {
+                            Text(note.title)
+                            Text(note.body)
                         }
-
-                        TextButton(onClick = { scope.launch { dao.delete(note) } }) {
+                        TextButton(onClick = { viewModel.delete(note) }) {
                             Text("Delete")
                         }
                     }
